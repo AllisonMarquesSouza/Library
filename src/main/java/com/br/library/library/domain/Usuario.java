@@ -17,6 +17,4 @@ public class Usuario {
 
     private String email;
 
-
-
 }
