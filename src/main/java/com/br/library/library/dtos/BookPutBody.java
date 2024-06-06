@@ -5,9 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 import java.time.LocalDate;
-
 @Getter
-public class BookPostBody {
+public class BookPutBody {
+    @NotBlank
+    private Long id;
 
     @NotBlank
     private String title;
@@ -21,4 +22,7 @@ public class BookPostBody {
     @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate datePublished;
+
+    @NotBlank
+    private boolean available;
 }

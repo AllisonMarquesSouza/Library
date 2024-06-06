@@ -16,7 +16,7 @@ public class Reservation {
     @ManyToOne
     private Usuario usuario;
 
-    @ManyToOne
+    @OneToOne
     private Book book;
 
     private LocalDateTime reservationDate;
