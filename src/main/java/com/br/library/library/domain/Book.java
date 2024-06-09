@@ -1,7 +1,7 @@
 package com.br.library.library.domain;
 
-import com.br.library.library.dtos.BookPostBody;
-import com.br.library.library.dtos.BookPutBody;
+import com.br.library.library.dtos.BookDtoPost;
+import com.br.library.library.dtos.BookDtoPut;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "books")
@@ -32,19 +31,19 @@ public class Book {
 
     private boolean available;
 
-    public Book(BookPostBody bookPostBody) {
-        this.title = bookPostBody.getTitle();
-        this.genre = bookPostBody.getGenre();
-        this.author = bookPostBody.getAuthor();
-        this.datePublished = bookPostBody.getDatePublished();
+    public Book(BookDtoPost bookDtoPost) {
+        this.title = bookDtoPost.getTitle();
+        this.genre = bookDtoPost.getGenre();
+        this.author = bookDtoPost.getAuthor();
+        this.datePublished = bookDtoPost.getDatePublished();
     }
-    public Book(BookPutBody bookPutBody) {
-        this.id = bookPutBody.getId();
-        this.title = bookPutBody.getTitle();
-        this.genre = bookPutBody.getGenre();
-        this.author = bookPutBody.getAuthor();
-        this.datePublished = bookPutBody.getDatePublished();
-        this.available = bookPutBody.isAvailable();
+    public Book(BookDtoPut bookDtoPut) {
+        this.id = bookDtoPut.getId();
+        this.title = bookDtoPut.getTitle();
+        this.genre = bookDtoPut.getGenre();
+        this.author = bookDtoPut.getAuthor();
+        this.datePublished = bookDtoPut.getDatePublished();
+        this.available = bookDtoPut.isAvailable();
 
     }
 

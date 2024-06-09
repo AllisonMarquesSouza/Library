@@ -6,7 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 @Getter
-public class BookPutBody {
+public class BookDtoPut {
     @NotBlank
     private Long id;
 

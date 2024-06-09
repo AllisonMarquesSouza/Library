@@ -27,7 +27,7 @@ public class TokenService {
                     .sign(algorithm); //to do generate
             return token;
         } catch (JWTCreationException e) {
-            throw new RuntimeException("Error generating token", e);
+            throw new JWTCreationException("Error generating token", e);
         }
     }
 
@@ -40,7 +40,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            return "";
+            throw new JWTVerificationException("Error validating token");
         }
     }
 
