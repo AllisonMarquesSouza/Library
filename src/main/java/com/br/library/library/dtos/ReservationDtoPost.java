@@ -13,6 +13,9 @@ public class ReservationDtoPost {
     private String password;
 
     @NotBlank
+    private String email;
+
+    @NotBlank
     private String title;
 
     @NotBlank

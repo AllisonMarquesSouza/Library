@@ -31,7 +31,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleEntityNotFoundException(EntityNotFoundException entityNotFound) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message(entityNotFound.getMessage())
+                        .message("Entity not found")
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.NOT_FOUND.value())
                         .title("Not Found Exception , Check the Documentation")
@@ -40,25 +40,38 @@ public class HandlerException {
                         .build(), HttpStatus.NOT_FOUND);
 
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArg) {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionDetails> handleIllegalArgumentException(IllegalArgumentException illegalArg) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message(methodArg.getMessage())
+                        .message("Argument invalid")
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Argument invalid, Check the fields")
                         .details("Argument invalid, check the documentation")
+                        .developerMessage(illegalArg.getClass().getName())
+                        .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArg) {
+        return new ResponseEntity<>(
+                ExceptionDetails.builder()
+                        .message("Method argument invalid")
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .title("Method argument invalid, Check the fields")
+                        .details("Method argument invalid, check the documentation")
                         .developerMessage(methodArg.getClass().getName())
                         .build(), HttpStatus.BAD_REQUEST);
-
     }
 
     @ExceptionHandler(JWTCreationException.class)
     public ResponseEntity<ExceptionDetails> handleJWTCreationException(JWTCreationException jwtCreationException) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message(jwtCreationException.getMessage())
+                        .message("Error generating token")
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Error when it was generating token")
@@ -71,7 +84,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleJWTVerificationException(JWTVerificationException jwtVerificationException) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message(jwtVerificationException.getMessage())
+                        .message("Error validating token")
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Error when it was verifying and validating token")

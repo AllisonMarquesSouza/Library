@@ -15,7 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-//OncePerRequestFilter -> Basically it to do one request by time
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;

@@ -22,6 +22,10 @@ public class BookController {
     public ResponseEntity<List<Book>> findAll() {
         return ResponseEntity.ok(bookService.findAll());
     }
+    @GetMapping("/findAllAvailable")
+    public ResponseEntity<List<Book>> findAllAvailableIsTrue() {
+        return ResponseEntity.ok(bookService.findAllAvailableIsTrue());
+    }
 
     @GetMapping("/findByGenre/{genre}")
     public ResponseEntity<List<Book>> findByGenre(@PathVariable String genre) {
@@ -35,6 +39,11 @@ public class BookController {
 
     @GetMapping("/findByTitle/{title}")
     public ResponseEntity<Book> findByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(bookService.findByTitle(title));
+    }
+
+    @GetMapping("/findByAuthor/{title}")
+    public ResponseEntity<Book> findByAuthor(@PathVariable String title) {
         return ResponseEntity.ok(bookService.findByTitle(title));
     }
 
