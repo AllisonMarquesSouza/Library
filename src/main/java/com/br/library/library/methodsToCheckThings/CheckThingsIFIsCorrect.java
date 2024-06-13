@@ -5,10 +5,9 @@ import java.util.regex.Pattern;
 public class CheckThingsIFIsCorrect {
 
     public static void checkEmailIsOk(String email) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,})+$");
         Matcher matcher = pattern.matcher(email);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("Email is not valid");
-        }
+        if(!matcher.matches()) throw new IllegalArgumentException("Email not valid, check it");
     }
+
 }

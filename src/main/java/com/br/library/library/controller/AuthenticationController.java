@@ -4,6 +4,8 @@ import com.br.library.library.domain.Usuario;
 import com.br.library.library.dtos.AuthenticationDtoPost;
 import com.br.library.library.dtos.DtoJWTToken;
 import com.br.library.library.dtos.RegisterDtoPost;
+import com.br.library.library.enums.UserRole;
+import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.UsuarioRepository;
 import com.br.library.library.security.TokenService;
 import com.br.library.library.methodsToCheckThings.CheckThingsIFIsCorrect;
@@ -42,14 +44,18 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterDtoPost registerDto) {
-        if(usuarioRepository.findByLogin(registerDto.login()) != null ) {
-            return ResponseEntity.badRequest().build();
+        if(usuarioRepository.findByLogin(registerDto.login()) != null) {
+            throw new BadRequestException("User with login already exists");
+        } else if(usuarioRepository.findByEmail(registerDto.email()).isPresent()) {
+            throw new BadRequestException("Email already exists");
         }
+
         CheckThingsIFIsCorrect.checkEmailIsOk(registerDto.email());
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.password());
 
-        Usuario usuario = new Usuario(registerDto.login(), encryptedPassword, registerDto.email(), registerDto.role());
+        Usuario usuario = new Usuario(registerDto.login(), encryptedPassword, registerDto.email());
+        usuario.setRole(UserRole.USER);
 
         usuarioRepository.save(usuario);
 

@@ -34,11 +34,10 @@ public class Usuario implements UserDetails{
     @Column(nullable = false)
     private UserRole role;
 
-    public Usuario(String login, String password, String email, UserRole role) {
+    public Usuario(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
-        this.role = role;
     }
 
 

@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.br.library.library.enums.ReservationStatus.AVAILABLE;
@@ -68,6 +70,7 @@ public class ReservationService {
             Reservation reservation = new Reservation(usuario1, book);
             reservation.getBook().setAvailable(false);
             reservation.setStatusReservation(RESERVED);
+            reservation.setReservationDate(LocalDate.now());
             return reservationRepository.save(reservation);
         }
         throw new BadRequestException("Book is not available");
@@ -90,7 +93,8 @@ public class ReservationService {
         if(Objects.equals(reservation.getUsuario().getLogin(),reservationPost.getLogin()) && checkingPassword){
             bookByTitle.setAvailable(true);
             reservation.setStatusReservation(AVAILABLE);
-            reservationRepository.deleteById(reservation.getId());
+            reservation.setReturnDate(LocalDate.now());
+            /* don't delete, because I want save the historic of reservation */
 
         } else
             throw new BadRequestException("Are you sure you have reserved the book ? Check the user typed");

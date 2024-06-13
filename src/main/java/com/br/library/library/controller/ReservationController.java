@@ -30,7 +30,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.doReserve(reservationDtoPost));
     }
 
-    @DeleteMapping("/delete")
+    @PutMapping("/returnBook")
     public ResponseEntity<Void> removeReservation(@RequestBody @Valid ReservationDtoPost reservationDtoPost) {
         reservationService.removeReserve(reservationDtoPost);
         return ResponseEntity.noContent().build();

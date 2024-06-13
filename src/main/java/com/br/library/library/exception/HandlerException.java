@@ -45,7 +45,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleIllegalArgumentException(IllegalArgumentException illegalArg) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message("Argument invalid")
+                        .message(illegalArg.getMessage())
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Argument invalid, Check the fields")

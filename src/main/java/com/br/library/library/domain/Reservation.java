@@ -1,12 +1,11 @@
 package com.br.library.library.domain;
 
-import com.br.library.library.dtos.ReservationDtoPost;
 import com.br.library.library.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservation")
@@ -24,8 +23,8 @@ public class Reservation {
     @OneToOne
     private Book book;
 
-    private LocalDateTime reservationDate;
-    private LocalDateTime returnDate;
+    private LocalDate reservationDate;
+    private LocalDate returnDate;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus statusReservation;
@@ -36,7 +35,6 @@ public class Reservation {
     public Reservation(Usuario usuario, Book book) {
         this.usuario = usuario;
         this.book = book;
-        this.reservationDate = LocalDateTime.now();
 
     }
 
