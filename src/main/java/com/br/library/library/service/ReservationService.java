@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import static com.br.library.library.enums.ReservationStatus.AVAILABLE;
@@ -34,7 +34,8 @@ public class ReservationService {
     public Reservation findById(Long id) {
         return reservationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
     }
-    public Reservation findByUsuario(AuthenticationDtoPost authentication) {
+
+    public List<Reservation> findByUsuario(AuthenticationDtoPost authentication) {
         Usuario usuario = usuarioRepository.findByLogin(authentication.login());
 
         if(Objects.isNull(usuario)) {
@@ -43,10 +44,11 @@ public class ReservationService {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean checkingPassword = encoder.matches(authentication.password(), usuario.getPassword());
-        //form of check the string and password encoder
+
         if(!checkingPassword) {
             throw new IllegalArgumentException("The password is incorrect, check it");
         }
+
 
         return reservationRepository.findByUsuario(usuario);
     }
@@ -56,7 +58,7 @@ public class ReservationService {
         Usuario usuario1 = usuarioRepository.findByEmail(reservationPost.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields"));
 
-        Usuario usuario2 = usuarioRepository.findByLogin(usuario1.getLogin()
+        Usuario usuario2 = usuarioRepository.findByLogin(usuario1.getUsername()
                 .describeConstable().orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields")));
 
         if(!Objects.equals(usuario1, usuario2)){
@@ -69,7 +71,7 @@ public class ReservationService {
         if(book.isAvailable()) {
             Reservation reservation = new Reservation(usuario1, book);
             reservation.getBook().setAvailable(false);
-            reservation.setStatusReservation(RESERVED);
+            reservation.setCurrentStatusReservation(RESERVED);
             reservation.setReservationDate(LocalDate.now());
             return reservationRepository.save(reservation);
         }
@@ -90,11 +92,11 @@ public class ReservationService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean checkingPassword = encoder.matches(reservationPost.getPassword(), userByLogin.getPassword());
 
-        if(Objects.equals(reservation.getUsuario().getLogin(),reservationPost.getLogin()) && checkingPassword){
+        if(Objects.equals(reservation.getUsuario().getUsername(),reservationPost.getLogin()) && checkingPassword){
             bookByTitle.setAvailable(true);
-            reservation.setStatusReservation(AVAILABLE);
+            reservation.setCurrentStatusReservation(AVAILABLE);
             reservation.setReturnDate(LocalDate.now());
-            /* don't delete, because I want save the historic of reservation */
+
 
         } else
             throw new BadRequestException("Are you sure you have reserved the book ? Check the user typed");

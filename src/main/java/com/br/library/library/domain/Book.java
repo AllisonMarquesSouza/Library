@@ -29,6 +29,7 @@ public class Book {
     @Column(nullable = false)
     private String author;
 
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate datePublished;
 

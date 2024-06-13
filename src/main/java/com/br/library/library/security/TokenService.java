@@ -22,7 +22,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("library-apy") //Issuer of api
-                    .withSubject(usuario.getLogin())
+                    .withSubject(usuario.getUsername())
                     .withExpiresAt(generateExpirationDate()) //time of expiration of the token
                     .sign(algorithm); //to do generate
             return token;

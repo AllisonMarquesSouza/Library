@@ -2,7 +2,6 @@ package com.br.library.library.domain;
 
 import com.br.library.library.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
 @Setter
 @NoArgsConstructor
 public class Usuario implements UserDetails{
@@ -45,7 +43,6 @@ public class Usuario implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN){
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-            //Giving authority for ADMIN ,for have both permission of admin and user
         } else
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 

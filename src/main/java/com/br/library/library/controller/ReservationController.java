@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/reservation")
@@ -21,7 +23,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findById(id));
     }
     @GetMapping("/findByUsuario")
-    public ResponseEntity<Reservation> findByUsuario(@RequestBody AuthenticationDtoPost usuario) {
+    public ResponseEntity<List<Reservation>> findByUsuario(@RequestBody AuthenticationDtoPost usuario) {
         return ResponseEntity.ok(reservationService.findByUsuario(usuario));
     }
 

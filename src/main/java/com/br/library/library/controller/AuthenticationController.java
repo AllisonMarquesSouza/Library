@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager; //form of authenticate user with spring
+    private final AuthenticationManager authenticationManager;
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
 
@@ -55,7 +55,7 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.password());
 
         Usuario usuario = new Usuario(registerDto.login(), encryptedPassword, registerDto.email());
-        usuario.setRole(UserRole.USER);
+        usuario.setRole(UserRole.ADMIN);
 
         usuarioRepository.save(usuario);
 
