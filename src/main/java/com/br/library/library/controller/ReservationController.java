@@ -1,8 +1,10 @@
 package com.br.library.library.controller;
 
+import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.dtos.AuthenticationDtoPost;
 import com.br.library.library.dtos.ReservationDtoPost;
+import com.br.library.library.dtos.dtoForQueryPersonalized.ReservationBookDTO;
 import com.br.library.library.service.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +20,19 @@ import java.util.List;
 public class ReservationController {
     private final ReservationService reservationService;
 
+    @GetMapping("/findBooksMostReserved")
+    public ResponseEntity<List<Book>> findBooksMostReserved(){
+        return ResponseEntity.ok(reservationService.findBooksMostReserved());
+    }
+
     @GetMapping("/findById/{id}")
     public ResponseEntity<Reservation> findById(@PathVariable Long id) {
         return ResponseEntity.ok(reservationService.findById(id));
     }
-    @GetMapping("/findByUsuario")
-    public ResponseEntity<List<Reservation>> findByUsuario(@RequestBody AuthenticationDtoPost usuario) {
-        return ResponseEntity.ok(reservationService.findByUsuario(usuario));
+
+    @GetMapping("/findReservationByUsuario")
+    public ResponseEntity<List<ReservationBookDTO>> findReservationByUsuario(@RequestBody AuthenticationDtoPost usuario) {
+        return ResponseEntity.ok(reservationService.findReservationByUsuario(usuario));
     }
 
     @PostMapping("/reserve")

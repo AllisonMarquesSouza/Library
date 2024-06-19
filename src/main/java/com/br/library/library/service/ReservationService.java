@@ -5,6 +5,7 @@ import com.br.library.library.domain.Reservation;
 import com.br.library.library.domain.Usuario;
 import com.br.library.library.dtos.AuthenticationDtoPost;
 import com.br.library.library.dtos.ReservationDtoPost;
+import com.br.library.library.dtos.dtoForQueryPersonalized.ReservationBookDTO;
 import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.ReservationRepository;
 import com.br.library.library.repository.UsuarioRepository;
@@ -34,8 +35,11 @@ public class ReservationService {
     public Reservation findById(Long id) {
         return reservationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
     }
+    public List<Book> findBooksMostReserved(){
+        return reservationRepository.findBookMostReserved();
+    }
 
-    public List<Reservation> findByUsuario(AuthenticationDtoPost authentication) {
+    public List<ReservationBookDTO> findReservationByUsuario(AuthenticationDtoPost authentication) {
         Usuario usuario = usuarioRepository.findByLogin(authentication.login());
 
         if(Objects.isNull(usuario)) {
@@ -49,8 +53,7 @@ public class ReservationService {
             throw new IllegalArgumentException("The password is incorrect, check it");
         }
 
-
-        return reservationRepository.findByUsuario(usuario);
+        return reservationRepository.findReservationByUsuario(usuario.getId());
     }
 
     @Transactional
@@ -58,7 +61,7 @@ public class ReservationService {
         Usuario usuario1 = usuarioRepository.findByEmail(reservationPost.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields"));
 
-        Usuario usuario2 = usuarioRepository.findByLogin(usuario1.getUsername()
+        Usuario usuario2 = usuarioRepository.findByLogin(usuario1.getLogin()
                 .describeConstable().orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields")));
 
         if(!Objects.equals(usuario1, usuario2)){
@@ -92,7 +95,7 @@ public class ReservationService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean checkingPassword = encoder.matches(reservationPost.getPassword(), userByLogin.getPassword());
 
-        if(Objects.equals(reservation.getUsuario().getUsername(),reservationPost.getLogin()) && checkingPassword){
+        if(Objects.equals(reservation.getUsuario().getLogin(),reservationPost.getLogin()) && checkingPassword){
             bookByTitle.setAvailable(true);
             reservation.setCurrentStatusReservation(AVAILABLE);
             reservation.setReturnDate(LocalDate.now());

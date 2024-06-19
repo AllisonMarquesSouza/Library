@@ -42,9 +42,9 @@ public class BookController {
         return ResponseEntity.ok(bookService.findByTitle(title));
     }
 
-    @GetMapping("/findByAuthor/{title}")
-    public ResponseEntity<Book> findByAuthor(@PathVariable String title) {
-        return ResponseEntity.ok(bookService.findByTitle(title));
+    @GetMapping("/findByAuthor/{author}")
+    public ResponseEntity<Book> findByAuthor(@PathVariable String author) {
+        return ResponseEntity.ok(bookService.findByAuthor(author));
     }
 
     @PostMapping("/save")
@@ -62,8 +62,5 @@ public class BookController {
         bookService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 
 }

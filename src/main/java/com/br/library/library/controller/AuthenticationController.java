@@ -11,6 +11,7 @@ import com.br.library.library.security.TokenService;
 import com.br.library.library.methodsToCheckThings.CheckThingsIFIsCorrect;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,7 +44,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDtoPost registerDto) {
+    public ResponseEntity<Usuario> register(@RequestBody @Valid RegisterDtoPost registerDto) {
         if(usuarioRepository.findByLogin(registerDto.login()) != null) {
             throw new BadRequestException("User with login already exists");
         } else if(usuarioRepository.findByEmail(registerDto.email()).isPresent()) {
@@ -55,11 +56,9 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.password());
 
         Usuario usuario = new Usuario(registerDto.login(), encryptedPassword, registerDto.email());
-        usuario.setRole(UserRole.ADMIN);
+        usuario.setRole(UserRole.USER);
 
-        usuarioRepository.save(usuario);
-
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(usuarioRepository.save(usuario) , HttpStatus.CREATED);
 
     }
 
