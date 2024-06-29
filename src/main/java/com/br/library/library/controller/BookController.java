@@ -1,8 +1,8 @@
 package com.br.library.library.controller;
 
 import com.br.library.library.domain.Book;
-import com.br.library.library.dtos.BookDtoPost;
-import com.br.library.library.dtos.BookDtoPut;
+import com.br.library.library.dtos.book.BookDtoPost;
+import com.br.library.library.dtos.book.BookDtoPut;
 import com.br.library.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class BookController {
         return ResponseEntity.ok(bookService.findAll());
     }
     @GetMapping("/findAllAvailable")
-    public ResponseEntity<List<Book>> findAllAvailableIsTrue() {
-        return ResponseEntity.ok(bookService.findAllAvailableIsTrue());
+    public ResponseEntity<List<Book>> findAllAvailable() {
+        return ResponseEntity.ok(bookService.findAllAvailable());
     }
 
     @GetMapping("/findByGenre/{genre}")
@@ -52,9 +52,10 @@ public class BookController {
         return new ResponseEntity<>(bookService.save(bookPost), HttpStatus.CREATED);
     }
 
-    @PutMapping("/replace")
-    public ResponseEntity<Book> replace(@RequestBody @Valid BookDtoPut bookPut) {
-        return new ResponseEntity<>(bookService.replace(bookPut), HttpStatus.OK);
+    @PutMapping("/update")
+    public ResponseEntity<Void> update(@RequestBody @Valid BookDtoPut bookPut) {
+        bookService.update(bookPut);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")

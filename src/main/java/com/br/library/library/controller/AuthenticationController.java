@@ -1,9 +1,9 @@
 package com.br.library.library.controller;
 
 import com.br.library.library.domain.Usuario;
-import com.br.library.library.dtos.AuthenticationDtoPost;
-import com.br.library.library.dtos.DtoJWTToken;
-import com.br.library.library.dtos.RegisterDtoPost;
+import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
+import com.br.library.library.dtos.jwtToken.DtoJWTToken;
+import com.br.library.library.dtos.usuario.RegisterDtoPost;
 import com.br.library.library.enums.UserRole;
 import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.UsuarioRepository;

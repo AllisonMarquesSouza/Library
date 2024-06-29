@@ -1,26 +1,27 @@
 package com.br.library.library.domain;
 
-import com.br.library.library.dtos.BookDtoPost;
-import com.br.library.library.dtos.BookDtoPut;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.br.library.library.dtos.book.BookDtoPost;
+import com.br.library.library.dtos.book.BookDtoPut;
+import com.br.library.library.enums.StatusToReserve;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "books")
+@Table(name = "book")
 @Setter
 @Getter
+@Builder
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false , unique = true )
+    @Column(nullable = false , unique = true)
     private String title;
 
     @Column(nullable = false)
@@ -30,10 +31,11 @@ public class Book {
     private String author;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate datePublished;
 
-    private boolean available;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusToReserve statusToReserve;
 
     public Book(BookDtoPost bookDtoPost) {
         this.title = bookDtoPost.getTitle();
@@ -47,8 +49,16 @@ public class Book {
         this.genre = bookDtoPut.getGenre();
         this.author = bookDtoPut.getAuthor();
         this.datePublished = bookDtoPut.getDatePublished();
-        this.available = bookDtoPut.isAvailable();
+        this.statusToReserve = bookDtoPut.getStatusToReserve();
 
+    }
+    public Book( Book book){
+        this.id = book.getId();
+        this.title = book.getTitle();
+        this.genre = book.getGenre();
+        this.author = book.getAuthor();
+        this.datePublished = book.getDatePublished();
+        this.statusToReserve = book.getStatusToReserve();
     }
 
 }

@@ -31,7 +31,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleEntityNotFoundException(EntityNotFoundException entityNotFound) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message("Entity not found")
+                        .message(entityNotFound.getMessage())
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.NOT_FOUND.value())
                         .title("Not Found Exception , Check the Documentation")
@@ -58,7 +58,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArg) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message("Method argument invalid")
+                        .message(methodArg.getMessage())
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Method argument invalid, Check the fields")
@@ -71,7 +71,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleJWTCreationException(JWTCreationException jwtCreationException) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message("Error generating token")
+                        .message(jwtCreationException.getMessage())
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Error when it was generating token")
@@ -84,7 +84,7 @@ public class HandlerException {
     public ResponseEntity<ExceptionDetails> handleJWTVerificationException(JWTVerificationException jwtVerificationException) {
         return new ResponseEntity<>(
                 ExceptionDetails.builder()
-                        .message("Error validating token")
+                        .message(jwtVerificationException.getMessage())
                         .timestamp(LocalDateTime.now())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .title("Error when it was verifying and validating token")

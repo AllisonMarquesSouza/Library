@@ -1,12 +1,16 @@
-package com.br.library.library.dtos;
+package com.br.library.library.dtos.book;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
+@AllArgsConstructor
+@Builder
 public class BookDtoPost {
 
     @NotBlank
@@ -18,6 +22,6 @@ public class BookDtoPost {
     @NotBlank
     private String author;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull
     private LocalDate datePublished;
 }

@@ -1,13 +1,16 @@
-package com.br.library.library.dtos;
+package com.br.library.library.dtos.book;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.br.library.library.enums.StatusToReserve;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
 @Getter
+@AllArgsConstructor
 public class BookDtoPut {
-    @NotBlank
+    @NotNull
     private Long id;
 
     @NotBlank
@@ -19,10 +22,9 @@ public class BookDtoPut {
     @NotBlank
     private String author;
 
-    @NotBlank
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull
     private LocalDate datePublished;
 
-    @NotBlank
-    private boolean available;
+    @NotNull
+    private StatusToReserve statusToReserve;
 }

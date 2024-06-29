@@ -2,20 +2,21 @@ package com.br.library.library.domain;
 
 import com.br.library.library.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Usuario implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,12 +32,21 @@ public class Usuario implements UserDetails{
     private String email;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     public Usuario(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
+    }
+
+    public Usuario(Usuario usuario){
+        this.id = usuario.getId();
+        this.login = usuario.getLogin();
+        this.password = usuario.getPassword();
+        this.email = usuario.getEmail();
+        this.role = usuario.getRole();
     }
 
 

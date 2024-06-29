@@ -1,14 +1,14 @@
 package com.br.library.library.service;
 
 import com.br.library.library.domain.Book;
-import com.br.library.library.dtos.BookDtoPost;
-import com.br.library.library.dtos.BookDtoPut;
+import com.br.library.library.dtos.book.BookDtoPost;
+import com.br.library.library.dtos.book.BookDtoPut;
+import com.br.library.library.enums.StatusToReserve;
 import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,21 +16,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class BookService {
     private final BookRepository bookRepository;
 
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
-    public List<Book> findAllAvailableIsTrue() {
-        return bookRepository.findAllByAvailableIsTrue();
+    public List<Book> findAllAvailable() {
+        return bookRepository.findAllStatusToReserveIsAVAILABLE();
     }
 
     public List<Book> findByGenre(String genre) {
         List<Book> byGenreIgnoreCase = bookRepository.findByGenreIgnoreCase(genre);
         if (byGenreIgnoreCase.isEmpty()) {
-            throw new EntityNotFoundException("Genre not exist");
+            throw new EntityNotFoundException("Genre not found");
         }
         return byGenreIgnoreCase;
     }
@@ -56,15 +55,20 @@ public class BookService {
             throw new BadRequestException("Book already exists ");
         }
         Book book = new Book(postBook);
-        book.setAvailable(true);
+        book.setStatusToReserve(StatusToReserve.AVAILABLE);
         return bookRepository.save(book);
     }
 
-    @Transactional
-    public Book replace(BookDtoPut bookDtoPut){
-        findById(bookDtoPut.getId());
-        Book book = new Book(bookDtoPut);
-        return bookRepository.save(book);
+
+    public void update(BookDtoPut bookDtoPut){
+        Book bookFound = findById(bookDtoPut.getId());
+        Book bookUpdated = new Book(bookDtoPut);
+        bookUpdated.setId(bookFound.getId());
+        bookRepository.save(bookUpdated);
+//
+//        bookRepository.update(bookDtoPut.getAuthor(), bookDtoPut.getDatePublished(),
+//                bookDtoPut.getGenre(),bookDtoPut.getStatusToReserve(), bookDtoPut.getTitle(), bookDtoPut.getId());
+
     }
 
     @Transactional

@@ -1,5 +1,5 @@
 package com.br.library.library.enums;
 
-public enum ReservationStatus {
+public enum StatusToReserve {
     RESERVED,CANCELED, AVAILABLE
 }

@@ -3,33 +3,31 @@ package com.br.library.library.service;
 import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.domain.Usuario;
-import com.br.library.library.dtos.AuthenticationDtoPost;
-import com.br.library.library.dtos.ReservationDtoPost;
-import com.br.library.library.dtos.dtoForQueryPersonalized.ReservationBookDTO;
+import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
+import com.br.library.library.dtos.reservation.ReservationDto;
+import com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO;
 import com.br.library.library.exception.BadRequestException;
+import com.br.library.library.methodsToCheckThings.CheckThingsIFIsCorrect;
+import com.br.library.library.repository.BookRepository;
 import com.br.library.library.repository.ReservationRepository;
 import com.br.library.library.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import static com.br.library.library.enums.ReservationStatus.AVAILABLE;
-import static com.br.library.library.enums.ReservationStatus.RESERVED;
+import static com.br.library.library.enums.StatusToReserve.*;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final BookService bookService;
     private final UsuarioRepository usuarioRepository;
+    private final BookRepository bookRepository;
 
 
     public Reservation findById(Long id) {
@@ -39,70 +37,70 @@ public class ReservationService {
         return reservationRepository.findBookMostReserved();
     }
 
-    public List<ReservationBookDTO> findReservationByUsuario(AuthenticationDtoPost authentication) {
+    public List<ShowReservationAndBookDTO> findReservationByUsuario(AuthenticationDtoPost authentication) {
         Usuario usuario = usuarioRepository.findByLogin(authentication.login());
 
         if(Objects.isNull(usuario)) {
             throw new EntityNotFoundException("Usuario not found");
         }
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        boolean checkingPassword = encoder.matches(authentication.password(), usuario.getPassword());
-
-        if(!checkingPassword) {
-            throw new IllegalArgumentException("The password is incorrect, check it");
-        }
+        CheckThingsIFIsCorrect.checkPasswordIsOk(authentication.password(), usuario.getPassword());
 
         return reservationRepository.findReservationByUsuario(usuario.getId());
     }
 
     @Transactional
-    public Reservation doReserve(ReservationDtoPost reservationPost) {
-        Usuario usuario1 = usuarioRepository.findByEmail(reservationPost.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields"));
+    public Reservation doReserve(ReservationDto reservationPost) {
 
-        Usuario usuario2 = usuarioRepository.findByLogin(usuario1.getLogin()
-                .describeConstable().orElseThrow(() -> new EntityNotFoundException("Usuario not found, check the fields")));
+        Usuario userByLogin = usuarioRepository.findByLogin(reservationPost.getLogin()
+                .describeConstable()
+                .orElseThrow(() -> new EntityNotFoundException("Login not found, check the field")));
 
-        if(!Objects.equals(usuario1, usuario2)){
+        Usuario userByEmail = usuarioRepository.findByEmail(reservationPost.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Email not found, check the field"));
+
+        if(!Objects.equals(userByEmail, userByLogin)){
             throw new IllegalArgumentException("Fields of the User aren't the corrects , check it");
         }
+
+        CheckThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), userByLogin.getPassword());
 
 
         Book book = bookService.findByTitle(reservationPost.getTitle());
 
-        if(book.isAvailable()) {
-            Reservation reservation = new Reservation(usuario1, book);
-            reservation.getBook().setAvailable(false);
-            reservation.setCurrentStatusReservation(RESERVED);
-            reservation.setReservationDate(LocalDate.now());
-            return reservationRepository.save(reservation);
+        if(book.getStatusToReserve() == RESERVED || book.getStatusToReserve() == CANCELED ){
+            throw new BadRequestException("Book is not available ");
         }
-        throw new BadRequestException("Book is not available");
+
+        book.setStatusToReserve(RESERVED);
+        Reservation reservation = new Reservation(userByLogin, book);
+        return reservationRepository.save(reservation);
 
     }
 
     @Transactional
-    public void removeReserve(ReservationDtoPost reservationPost) {
+    public void returnBook(ReservationDto reservationPost) {
 
-        Book bookByTitle = bookService.findByTitle(reservationPost.getTitle());
-        Usuario userByLogin = usuarioRepository.findByLogin(reservationPost.getLogin());
+        Book book = bookRepository
+                .findByTitleAndGenreAndAuthor(reservationPost.getTitle(), reservationPost.getGenre(), reservationPost.getAuthor())
+                .orElseThrow(() -> new EntityNotFoundException("Book not found, check the field are corrects"));
 
-        Reservation reservation = reservationRepository.findByBookAndUsuario(bookByTitle, userByLogin)
-                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+        Usuario usuario = usuarioRepository
+                .findByLoginAndEmail(reservationPost.getLogin(), reservationPost.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User not found, check the fields are corrects"));
 
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        boolean checkingPassword = encoder.matches(reservationPost.getPassword(), userByLogin.getPassword());
+        Reservation reservation = reservationRepository.findByBookAndUsuario(book, usuario)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found, check the user and book"));
 
-        if(Objects.equals(reservation.getUsuario().getLogin(),reservationPost.getLogin()) && checkingPassword){
-            bookByTitle.setAvailable(true);
-            reservation.setCurrentStatusReservation(AVAILABLE);
+        CheckThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), usuario.getPassword());
+
+        if(book.getStatusToReserve() == RESERVED ){
+            book.setStatusToReserve(AVAILABLE);
             reservation.setReturnDate(LocalDate.now());
 
-
         } else
-            throw new BadRequestException("Are you sure you have reserved the book ? Check the user typed");
+            throw new BadRequestException("Do you reserved the book ? Check it , maybe you returned it");
 
     }
 

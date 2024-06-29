@@ -1,11 +1,13 @@
-package com.br.library.library.dtos;
+package com.br.library.library.dtos.reservation;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-public class ReservationDtoPost {
+@Builder
+public class ReservationDto {
     @NotBlank
     private String login;
 
