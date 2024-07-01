@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario implements UserDetails{

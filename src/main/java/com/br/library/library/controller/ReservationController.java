@@ -37,7 +37,7 @@ public class ReservationController {
 
     @PostMapping("/reserve")
     public ResponseEntity<Reservation> doReservation(@RequestBody @Valid ReservationDto reservationDto) {
-        return ResponseEntity.ok(reservationService.doReserve(reservationDto));
+        return ResponseEntity.ok(reservationService.makeReservation(reservationDto));
     }
 
     @PutMapping("/returnBook")

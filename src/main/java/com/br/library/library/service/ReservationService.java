@@ -3,18 +3,18 @@ package com.br.library.library.service;
 import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.domain.Usuario;
-import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
 import com.br.library.library.dtos.reservation.ReservationDto;
 import com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO;
+import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
 import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.methodsToCheckThings.CheckThingsIFIsCorrect;
-import com.br.library.library.repository.BookRepository;
 import com.br.library.library.repository.ReservationRepository;
 import com.br.library.library.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +27,8 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final BookService bookService;
     private final UsuarioRepository usuarioRepository;
-    private final BookRepository bookRepository;
+    private final CheckThingsIFIsCorrect checkThingsIFIsCorrect;
+
 
 
     public Reservation findById(Long id) {
@@ -44,13 +45,13 @@ public class ReservationService {
             throw new EntityNotFoundException("Usuario not found");
         }
 
-        CheckThingsIFIsCorrect.checkPasswordIsOk(authentication.password(), usuario.getPassword());
+        checkThingsIFIsCorrect.checkPasswordIsOk(authentication.password(), usuario.getPassword());
 
         return reservationRepository.findReservationByUsuario(usuario.getId());
     }
 
     @Transactional
-    public Reservation doReserve(ReservationDto reservationPost) {
+    public Reservation makeReservation(ReservationDto reservationPost) {
 
         Usuario userByLogin = usuarioRepository.findByLogin(reservationPost.getLogin()
                 .describeConstable()
@@ -63,7 +64,7 @@ public class ReservationService {
             throw new IllegalArgumentException("Fields of the User aren't the corrects , check it");
         }
 
-        CheckThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), userByLogin.getPassword());
+        checkThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), userByLogin.getPassword());
 
 
         Book book = bookService.findByTitle(reservationPost.getTitle());
@@ -81,9 +82,10 @@ public class ReservationService {
     @Transactional
     public void returnBook(ReservationDto reservationPost) {
 
-        Book book = bookRepository
-                .findByTitleAndGenreAndAuthor(reservationPost.getTitle(), reservationPost.getGenre(), reservationPost.getAuthor())
-                .orElseThrow(() -> new EntityNotFoundException("Book not found, check the field are corrects"));
+        Book book = bookService
+                .findByTitleAndGenreAndAuthor(reservationPost.getTitle(),
+                        reservationPost.getGenre(), reservationPost.getAuthor());
+
 
         Usuario usuario = usuarioRepository
                 .findByLoginAndEmail(reservationPost.getLogin(), reservationPost.getEmail())
@@ -93,11 +95,16 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findByBookAndUsuario(book, usuario)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found, check the user and book"));
 
-        CheckThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), usuario.getPassword());
+        checkThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), usuario.getPassword());
 
         if(book.getStatusToReserve() == RESERVED ){
             book.setStatusToReserve(AVAILABLE);
-            reservation.setReturnDate(LocalDate.now());
+            Reservation reservationToBeSave = new Reservation(usuario, book);
+            reservationToBeSave.setId(reservation.getId());
+            reservationToBeSave.setReturnDate(LocalDate.now());
+
+            reservationRepository.save(reservationToBeSave);
+
 
         } else
             throw new BadRequestException("Do you reserved the book ? Check it , maybe you returned it");

@@ -29,6 +29,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
+    private CheckThingsIFIsCorrect checkThingsIFIsCorrect;
 
 
     @PostMapping("/login")
@@ -51,7 +52,7 @@ public class AuthenticationController {
             throw new BadRequestException("Email already exists");
         }
 
-        CheckThingsIFIsCorrect.checkEmailIsOk(registerDto.email());
+        checkThingsIFIsCorrect.checkEmailIsOk(registerDto.email());
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDto.password());
 

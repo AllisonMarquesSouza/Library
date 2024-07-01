@@ -48,6 +48,11 @@ public class BookService {
         return bookRepository.findByAuthorIgnoreCase(author)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found, check the fields"));
     }
+    public Book findByTitleAndGenreAndAuthor(String title, String genre, String author) {
+        return bookRepository.findByTitleAndGenreAndAuthor(title, genre, author)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found, check the fields"));
+
+    }
 
     @Transactional
     public Book save(BookDtoPost postBook) {
@@ -65,9 +70,6 @@ public class BookService {
         Book bookUpdated = new Book(bookDtoPut);
         bookUpdated.setId(bookFound.getId());
         bookRepository.save(bookUpdated);
-//
-//        bookRepository.update(bookDtoPut.getAuthor(), bookDtoPut.getDatePublished(),
-//                bookDtoPut.getGenre(),bookDtoPut.getStatusToReserve(), bookDtoPut.getTitle(), bookDtoPut.getId());
 
     }
 
