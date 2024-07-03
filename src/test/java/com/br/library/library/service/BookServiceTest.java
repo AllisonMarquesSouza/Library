@@ -3,6 +3,7 @@ package com.br.library.library.service;
 import com.br.library.library.domain.Book;
 import com.br.library.library.dtos.book.BookDtoPost;
 import com.br.library.library.enums.StatusToReserve;
+import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.BookRepository;
 import com.br.library.library.util.BookCreate;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @ExtendWith(SpringExtension.class)
@@ -162,6 +165,20 @@ class BookServiceTest {
         assertThat(bookToBeSave.getGenre()).isEqualTo(expectedBook.getGenre());
         assertThat(bookToBeSave.getStatusToReserve()).isEqualTo(StatusToReserve.AVAILABLE);
 
+
+    }
+    @Test
+    @DisplayName("Should return BadRequestException when title already exist")
+    void saveWhenTitleAlreadyExist() {
+
+        BDDMockito.when(bookRepositoryMock.existsByTitleIgnoreCase(ArgumentMatchers.any()))
+                .thenReturn(true);
+
+        BadRequestException exception = assertThrows(BadRequestException.class,
+                () -> bookService.save(BookDtoPost.builder().build())
+        );
+
+        assertEquals("Book already exists ", exception.getMessage());
 
     }
 

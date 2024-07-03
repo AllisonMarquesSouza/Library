@@ -19,6 +19,17 @@ public class ReservationCreate {
                 .returnDate(LocalDate.now().plusDays(10))
                 .build();
     }
+    public static ReservationDto createReservationBookReserved(){
+        return ReservationDto.builder()
+                .title(BookCreate.createBook().getTitle())
+                .genre(BookCreate.createBook().getGenre())
+                .author(BookCreate.createBook().getAuthor())
+                .login(UsuarioCreate.createUsuario().getLogin())
+                .password(UsuarioCreate.createUsuario().getPassword())
+                .email(UsuarioCreate.createUsuario().getEmail())
+                .build();
+    }
+
     public static ReservationDto createReservationDtoValid(){
         return ReservationDto.builder()
                 .title(BookCreate.createBookValid().getTitle())

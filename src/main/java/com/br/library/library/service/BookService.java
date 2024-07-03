@@ -8,6 +8,7 @@ import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,7 @@ public class BookService {
 
     @Transactional
     public Book save(BookDtoPost postBook) {
+
         if(bookRepository.existsByTitleIgnoreCase(postBook.getTitle())) {
             throw new BadRequestException("Book already exists ");
         }
