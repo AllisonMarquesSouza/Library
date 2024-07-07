@@ -8,7 +8,6 @@ import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.repository.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

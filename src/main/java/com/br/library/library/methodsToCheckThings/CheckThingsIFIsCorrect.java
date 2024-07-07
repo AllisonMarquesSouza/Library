@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 @Component
 public class CheckThingsIFIsCorrect {
 
+
     public void checkEmailIsOk(String email) {
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,})+$");
         Matcher matcher = pattern.matcher(email);
