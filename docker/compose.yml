@@ -1,0 +1,57 @@
+services:
+  db:
+    image: mysql:8.0.31
+    container_name: mysql-1
+#    restart: always
+    env_file:
+      - .env
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - minha-rede
+
+  app1:
+    image: library_api/test1
+    container_name: libraryApi-1
+#    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    networks:
+      - minha-rede
+
+  app2:
+    image: library_api/test1
+    container_name: libraryApi-2
+#    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "5000:8080"
+    networks:
+      - minha-rede
+
+
+networks:
+  minha-rede:
+    driver: bridge
+
+volumes:
+  db:
+
+
+#environment: -> I don't use the environment , because even use the file .env to bring the variables
+#  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/library_manager
+#  SPRING_DATASOURCE_USERNAME: root
+#  SPRING_DATASOURCE_PASSWORD: root
+
+
+
+#I don't use the volumes in apps , because the data are saved in database , don't changed the api
