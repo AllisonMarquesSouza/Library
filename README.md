@@ -38,7 +38,9 @@ Technologies used:
 - Docker
 Bcrypt
 
+Endpoints: 
 
+![Captura de tela 2024-08-10 153733](https://github.com/user-attachments/assets/b30cfef3-a71d-463b-a201-b61b79bae93e)
 
 
 
