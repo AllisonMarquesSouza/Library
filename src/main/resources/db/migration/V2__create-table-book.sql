@@ -1,0 +1,8 @@
+CREATE TABLE book(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(150) NOT NULL UNIQUE ,
+    genre VARCHAR(100) NOT NULL,
+    author VARCHAR(150) NOT NULL,
+    date_Published DATE NOT NULL,
+    status_Reserve ENUM('RESERVED','CANCELED', 'AVAILABLE') NOT NULL
+);
