@@ -1,48 +1,44 @@
-Baixe o projeto.
-Execute-o em uma IDE de sua escolha.
-Abra seu navegador e navegue para a seguinte URL:
+Execute it in an IDE of your choice.
+Open your browser and type the URL:
 http://localhost:8080/swagger-ui/index.html
-A API está totalmente documentada via Swagger.
+The API is fully documented with Swagger.
 
-Segurança da API
-A API é protegida pelo Spring Security (token JWT). Aqui estão os passos para obter acesso:
+Security API
+The API is protected by Spring Security (JWT token). Here are the steps to gain access:
 
-Registro de Usuário: Registre um usuário no banco de dados (você pode fazer isso via Postman ou Swagger).
-OBS: Se quiser que o usuario tenha permissao de ADMIN, adicione diretamente no banco de dados .
+Register User: Register a user in the database at the endpoint /register in Swagger.
+Grant ADMIN Permission: If you want the user to have ADMIN permission, add it directly in the database.
+Login: For an already registered user, you can log in.
+Receive Token: After logging in, you will receive a token.
+Authorize: Use the token to authorize in Swagger. Once authorized, all methods are available for use.
+About the API:
 
-Login: Com o usuário registrado, faça o login.
-Obtenção do Token: Recupere o token retornado após o login.
-Autorizar Swagger: Use o token para autorizar o Swagger. Uma vez autorizado, todos os métodos estarão acessíveis.
-Sobre a API:
+This REST API was created to manage books in a library and provides the following features:
 
-Esta API REST foi projetada para gerenciar livros em uma biblioteca. Ela suporta as seguintes funcionalidades:
+- Register users in the system.
+- Create books (only with ADMIN role).
+- Manage books, including:
+- Listing books available for reservation.
+- Deleting books.
+- Making reservations.
+- Managing reservations.
+- Returning books (the book will automatically become available for reservation).
+- Controller Security: Requests are permitted only with a valid token for authentication (Exceptions: Register and login are always allowed).
+- Password Encryption: Passwords are encrypted using Bcrypt.
 
-- Registrar Usuários do Sistema: Adicionar novos usuários ao sistema.
-  
-- Cadastrar Livros: Adicionar novos livros na biblioteca , apenas com a permissão ADMIN  .
-
-- Gerenciar livros : Listar livros(pode-se listar apenas os disponíveis pra reserva) .
-
-- Deleção: Realizar deleção direta ou deleção lógica baseada em regras de negócios.
-
-- Fazer reserva : Fazer uma reserva se o livro estiver disponível, usa-se o livro e usuario .
-  
-- Gerenciar reserva : Listar reserva por id , ou por usuário que foi registrado.
-  
-- Devolver o livro : Devoloção do livro, e automaticamente já fica pronto pra ser reservado novamente.
-
-- Controle de Segurança: As requisições são permitidas apenas após o login e inclusão do token para autenticação. Com exeções do Login e Cadastro (essas estão sempre permitidas )
-
-- Criptografia de Senha: As senhas são criptografadas usando Bcrypt para garantir a segurança da instituição e suas funções.
-
-
-Tecnologias Utilizadas:
+Technologies used:
 
 - Java
 - Spring Boot
-- Token JWT
+- JWT Token
 - MySQL
+- Flyway (manages database tables)
 - Swagger
 - Spring Security
-- Docker Conteinização
-- Bcrypt
+- Docker
+Bcrypt
+
+
+
+
+
