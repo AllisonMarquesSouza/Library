@@ -12,10 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuario")
-@Setter
-@Getter
 @Builder
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario implements UserDetails{
@@ -23,16 +21,16 @@ public class Usuario implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "login")
     private String login;
 
-    @Column(nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "email")
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 

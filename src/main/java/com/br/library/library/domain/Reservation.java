@@ -28,9 +28,10 @@ public class Reservation {
     @JoinColumn(name = "id_book")
     private Book book;
 
-    @Column(nullable = false)
+    @Column(name = "reservation_date")
     private LocalDate reservationDate;
 
+    @Column(name = "return_date")
     private LocalDate returnDate;
 
 

@@ -10,10 +10,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "book")
-@Setter
-@Getter
 @Builder
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
@@ -21,19 +19,19 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false , unique = true)
+    @Column(name = "title")
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "genre")
     private String genre;
 
-    @Column(nullable = false)
+    @Column(name = "author")
     private String author;
 
-    @Column(nullable = false)
+    @Column(name = "date_Published")
     private LocalDate datePublished;
 
-    @Column(nullable = false)
+    @Column(name = "status_Reserve")
     @Enumerated(EnumType.STRING)
     private StatusToReserve statusToReserve;
 
