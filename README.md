@@ -32,7 +32,7 @@ Technologies used:
 - Spring Boot
 - JWT Token
 - MySQL
-- Flyway (manages database tables)
+- Flyway (manage database tables)
 - Swagger
 - Spring Security
 - Docker
