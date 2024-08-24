@@ -164,16 +164,29 @@ class BookServiceTest {
     @Test
     @DisplayName("Should update Book when is successful")
     void update() {
-        Book book = BookCreate.createBookAvailable();
-        BookDtoPut bookPut = new BookDtoPut(1L, "Shadow Slave", "Romance", "Guilt333", LocalDate.now(), StatusToReserve.AVAILABLE);
+        Book existingBook = BookCreate.createBookAvailable();
 
-        Mockito.when(bookRepositoryMock.findById(Mockito.anyLong()))
-                .thenReturn(Optional.of(BookCreate.createBookAvailable()));
+        Book updatedBook = new Book(1L, "Lord of the mystery", "Suspense", "Choco",
+                LocalDate.of(2022, 1, 1), StatusToReserve.AVAILABLE);
 
-        Mockito.when(bookRepositoryMock.save(Mockito.any(Book.class))).thenReturn(book);
+        BookDtoPut bookPut = new BookDtoPut(1L, "Lord of the mystery", "Suspense",
+                "Choco", LocalDate.of(2022, 1, 1), StatusToReserve.AVAILABLE);
+
+        Mockito.when(bookRepositoryMock.findById(1L))
+                .thenReturn(Optional.of(existingBook));
+
+        Mockito.when(bookRepositoryMock.save(Mockito.any(Book.class))).thenReturn(updatedBook);
 
         assertDoesNotThrow(() -> bookService.update(bookPut));
-        verify(bookRepositoryMock).save(book);
+
+        Mockito.verify(bookRepositoryMock).save(Mockito.argThat(m ->
+                m.getId().equals(1L) &&
+                        m.getTitle().equals("Lord of the mystery") &&
+                        m.getGenre().equals("Suspense") &&
+                        m.getAuthor().equals("Choco") &&
+                        m.getDatePublished().equals(LocalDate.of(2022, 1, 1)) &&
+                        m.getStatusToReserve().equals(StatusToReserve.AVAILABLE)
+        ));
     }
 
     @Test
