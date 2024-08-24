@@ -3,7 +3,6 @@ package com.br.library.library.repository;
 import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.domain.Usuario;
-import com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,14 +24,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 
     @Query("""
-        SELECT new com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO
-        (b.title, b.genre, b.author,b.datePublished, b.statusToReserve, r.reservationDate, r.returnDate)
-            FROM Book AS b
-          LEFT JOIN Reservation  AS r
-            ON r.book.id = b.id
+        SELECT r
+            FROM Reservation AS r
          WHERE r.usuario.id = :usuarioId
         """)
-    List<ShowReservationAndBookDTO> findReservationByUsuario(Long usuarioId);
-
+    List<Reservation> findReservationByUsuarioId(Long usuarioId);
 
 }

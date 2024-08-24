@@ -21,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             FROM Book b
          WHERE b.statusToReserve = 'AVAILABLE'
         """)
-    List<Book> findAllStatusToReserveIsAVAILABLE();
+    List<Book> findAllBooksAvailable();
 
 
 

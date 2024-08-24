@@ -4,8 +4,6 @@ import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.domain.Usuario;
 import com.br.library.library.dtos.reservation.ReservationDto;
-import com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO;
-import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
 import com.br.library.library.exception.BadRequestException;
 import com.br.library.library.methodsToCheckThings.CheckThingsIFIsCorrect;
 import com.br.library.library.repository.ReservationRepository;
@@ -38,16 +36,19 @@ public class ReservationService {
         return reservationRepository.findBookMostReserved();
     }
 
-    public List<ShowReservationAndBookDTO> findReservationByUsuario(AuthenticationDtoPost authentication) {
-        Usuario usuario = usuarioRepository.findByLogin(authentication.login());
+    public List<Reservation> findReservationByUsuario(String username, String password) {
+        Usuario usuario = usuarioRepository.findByLogin(username
+                .describeConstable()
+                .orElseThrow(() -> new EntityNotFoundException("Login not found, check the field")));
 
-        if(Objects.isNull(usuario)) {
-            throw new EntityNotFoundException("Usuario not found");
+        checkThingsIFIsCorrect.checkPasswordIsOk(password, usuario.getPassword());
+
+        List<Reservation> reservationByUser = reservationRepository.findReservationByUsuarioId(usuario.getId());
+
+        if(reservationByUser.isEmpty()) {
+            throw new BadRequestException("You don't have any reservations yet");
         }
-
-        checkThingsIFIsCorrect.checkPasswordIsOk(authentication.password(), usuario.getPassword());
-
-        return reservationRepository.findReservationByUsuario(usuario.getId());
+        return reservationByUser;
     }
 
     @Transactional
@@ -61,12 +62,10 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Email not found, check the field"));
 
         if(!Objects.equals(userByEmail, userByLogin)){
-            throw new IllegalArgumentException("Fields of the User aren't the corrects , check it");
+            throw new BadRequestException("Fields of the User aren't the corrects , check it");
         }
 
         checkThingsIFIsCorrect.checkPasswordIsOk(reservationPost.getPassword(), userByLogin.getPassword());
-
-
         Book book = bookService.findByTitle(reservationPost.getTitle());
 
         if(book.getStatusToReserve() == RESERVED || book.getStatusToReserve() == CANCELED ){
@@ -102,7 +101,6 @@ public class ReservationService {
             Reservation reservationToBeSave = new Reservation(usuario, book);
             reservationToBeSave.setId(reservation.getId());
             reservationToBeSave.setReturnDate(LocalDate.now());
-
             reservationRepository.save(reservationToBeSave);
 
 
