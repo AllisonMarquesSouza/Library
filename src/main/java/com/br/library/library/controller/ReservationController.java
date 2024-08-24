@@ -3,8 +3,6 @@ package com.br.library.library.controller;
 import com.br.library.library.domain.Book;
 import com.br.library.library.domain.Reservation;
 import com.br.library.library.dtos.reservation.ReservationDto;
-import com.br.library.library.dtos.showQueryPersonalized.ShowReservationAndBookDTO;
-import com.br.library.library.dtos.usuario.AuthenticationDtoPost;
 import com.br.library.library.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +35,7 @@ public class ReservationController {
     @Operation(summary =  "Find most reserved ", method = "GET", description ="Find most reserved books",  responses = {
             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = Book.class)))
     })
-    @GetMapping("/findBooksMostReserved")
+    @GetMapping("/findMostReserved")
     public ResponseEntity<List<Book>> findBooksMostReserved(){
         return ResponseEntity.ok(reservationService.findBooksMostReserved());
     }
@@ -51,11 +49,11 @@ public class ReservationController {
     }
 
     @Operation(summary =  "Find by user", method = "GET", description ="find reservation by user",  responses = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = ShowReservationAndBookDTO.class)))
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = Reservation.class)))
     })
     @GetMapping("/findReservationByUsuario")
-    public ResponseEntity<List<ShowReservationAndBookDTO>> findReservationByUsuario(@RequestBody AuthenticationDtoPost usuario) {
-        return ResponseEntity.ok(reservationService.findReservationByUsuario(usuario));
+    public ResponseEntity<List<Reservation>> findReservationByUsuario(@RequestBody String username, String password) {
+        return ResponseEntity.ok(reservationService.findReservationByUsuario(username, password));
     }
 
     @Operation(summary =  "Make a reservation", method = "POST", description ="Make a reservation",  responses = {
@@ -69,7 +67,7 @@ public class ReservationController {
     @Operation(summary =  "Return a reservation", method = "PUT", description ="Return book of reservation",  responses = {
             @ApiResponse(responseCode = "204", description = "successful operation", content = @Content(schema = @Schema()))
     })
-    @PutMapping("/returnBook")
+    @PutMapping("/return")
     public ResponseEntity<Void> returnBook(@RequestBody @Valid ReservationDto reservationDto) {
         reservationService.returnBook(reservationDto);
         return ResponseEntity.noContent().build();

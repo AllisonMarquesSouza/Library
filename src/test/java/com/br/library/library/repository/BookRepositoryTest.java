@@ -12,10 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@ActiveProfiles("test") //identificando o properties do test
+@ActiveProfiles("test")
 @Log4j2
 class BookRepositoryTest {
     @Autowired
@@ -24,23 +24,18 @@ class BookRepositoryTest {
 
     @Test
     @DisplayName("Get Book Available from database when is successful")
-    void findAllStatusToReserveIsAVAILABLESuccess(){
+    void findAllBooksAvailableSuccess(){
 
-        Book bookAvailable = BookCreate.createBook();
-        bookAvailable.setStatusToReserve(StatusToReserve.AVAILABLE);
+        Book bookAvailable = BookCreate.createBookAvailable();
+        Book bookReserved = BookCreate.createBookReserved();
+
         bookRepository.save(bookAvailable);
+        bookRepository.save(bookReserved);
 
-
-        Book bookCanceled = BookCreate.createBook2();
-        bookCanceled.setStatusToReserve(StatusToReserve.CANCELED);
-        bookRepository.save(bookCanceled);
-
-        List<Book> result = bookRepository.findAllStatusToReserveIsAVAILABLE();
-        log.info(result.toString());
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0)).isEqualTo(bookAvailable);
-        assertThat(result.get(0).getStatusToReserve()).isEqualTo(StatusToReserve.AVAILABLE);
-
+        List<Book> result = bookRepository.findAllBooksAvailable();
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0), bookAvailable);
+        assertEquals(result.get(0).getStatusToReserve(), StatusToReserve.AVAILABLE);
     }
 
 

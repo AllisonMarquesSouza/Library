@@ -8,8 +8,9 @@ import java.time.LocalDate;
 
 public class BookCreate {
 
-    public static Book createBook() {
+    public static Book createBookReserved() {
         return Book.builder()
+                .id(2L)
                 .title("Shadow Slave").
                 genre("Romance")
                 .author("Guilt333")
@@ -19,7 +20,19 @@ public class BookCreate {
 
     }
 
-    public static Book createBook2() {
+    public static Book createBookAvailable() {
+        return Book.builder()
+                .id(1L)
+                .title("Shadow Slave").
+                genre("Romance")
+                .author("Guilt333")
+                .datePublished(LocalDate.now())
+                .statusToReserve(StatusToReserve.AVAILABLE)
+                .build();
+
+    }
+
+    public static Book createBookAvailable2() {
         return Book.builder()
                 .title("Shadow Slave 2 ").
                 genre("Romance 2 ")
@@ -30,27 +43,4 @@ public class BookCreate {
 
     }
 
-
-    public static Book createBookValid() {
-        return Book.builder()
-                .id(1L)
-                .title("Shadow Slave").
-                genre("Romance")
-                .author("Guilt333")
-                .datePublished(LocalDate.now())
-                .statusToReserve(StatusToReserve.AVAILABLE)
-                .build();
-
-    }
-    public static BookDtoPut createBookDtoPut() {
-        return BookDtoPut.builder()
-                .id(1L)
-                .title("Shadow Slave").
-                genre("Romance")
-                .author("Guilt333")
-                .datePublished(LocalDate.now())
-                .statusToReserve(StatusToReserve.AVAILABLE)
-                .build();
-
-    }
 }

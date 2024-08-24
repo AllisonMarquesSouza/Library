@@ -23,7 +23,7 @@ public class BookService {
         return bookRepository.findAll();
     }
     public List<Book> findAllAvailable() {
-        return bookRepository.findAllStatusToReserveIsAVAILABLE();
+        return bookRepository.findAllBooksAvailable();
     }
 
     public List<Book> findByGenre(String genre) {
@@ -76,6 +76,7 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(findById(id).getId());
+        findById(id);
+        bookRepository.deleteById(id);
     }
 }
