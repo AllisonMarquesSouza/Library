@@ -36,7 +36,7 @@ Technologies used:
 - Swagger
 - Spring Security
 - Docker
-Bcrypt
+- Bcrypt
 
 Endpoints: 
 
